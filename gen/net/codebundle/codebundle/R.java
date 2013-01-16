@@ -23,9 +23,10 @@ public final class R {
     public static final class layout {
         public static final int about=0x7f030000;
         public static final int r_chromium_os=0x7f030001;
-        public static final int r_lubuntu=0x7f030002;
-        public static final int r_slax=0x7f030003;
-        public static final int r_slitaz=0x7f030004;
+        public static final int r_collab_edit=0x7f030002;
+        public static final int r_lubuntu=0x7f030003;
+        public static final int r_slax=0x7f030004;
+        public static final int r_slitaz=0x7f030005;
     }
     public static final class string {
         public static final int AdamBio=0x7f040006;
@@ -36,6 +37,7 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int hello_world=0x7f040001;
         public static final int rChromiumOS=0x7f040007;
+        public static final int rCollabEdit=0x7f04000b;
         public static final int rLubuntu=0x7f040008;
         public static final int rSlax=0x7f040009;
         public static final int rSlitaz=0x7f04000a;

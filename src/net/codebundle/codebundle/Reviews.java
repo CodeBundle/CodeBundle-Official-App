@@ -9,8 +9,8 @@ import android.widget.ListView;
 
 public class Reviews extends ListActivity {
 
-	String reviewName[] = {"Chromium OS", "Lubuntu Vs XP", "Slax", "Slitaz"};
-	public static int reviewLayout[] = {R.layout.r_chromium_os, R.layout.r_lubuntu, R.layout.r_slax, R.layout.r_slitaz};
+	String reviewName[] = {"Chromium OS", "Collab Edit", "Lubuntu Vs XP", "Slax", "Slitaz"};
+	public static int reviewLayout[] = {R.layout.r_chromium_os, R.layout.r_collab_edit, R.layout.r_lubuntu, R.layout.r_slax, R.layout.r_slitaz};
 	public static int revlistpos;
 
 	@Override
