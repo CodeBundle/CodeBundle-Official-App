@@ -1,0 +1,119 @@
+<p>
+<script>
+function top() {window.scroll();};
+});</script>
+<h1> NASM </h1>
+NASM is an Compiled Assembly Language, this tutorial will cover the hello world program, and setup <br>
+To Get NASM, go to <a href=www.nasm.us>The NASM Website</a> or download it in your relevent software repository (e.g. apt-get install nasm) <br><br>
+
+Before I begin I would like to highlight that NASM is by no stretch a programming language for begginers, it provides a way to interface directly with the linux kernel, and is very easy to get wrong, and not very human friendly, with that out of the way, I'll move on to the setup for the program "Hello World" <br><br>
+
+<b>Tutorial</b><br>
+NASM Programs are broken into three section: <br>
+Data; which stores initialised data such as constant information and compile time replacements (Constants) <br>
+BSS; Which stores uninitialised data such as space reserved for variables <br>
+Text; Which contains the bulk of the code <br><br>
+In nasm, we label each one of these as follows <br>
+<pre><code>
+section .data
+section .bss
+section .text
+
+</code></pre>
+In the hello world program, our goal is to output HelloWorld to the terminal, to do this, we are going to need the constant data "Hello World!", to set this up, we require three things, first, a label which will point to the first peice of data we define (the "H" in "Hello World!"), secondly, the way we are defining it, and thirdly, the information. We will be defining it as a collection of bytes, so we use the command db (short for "Define Byte"). We will use the label "msg" short for "message", though we could use anything we want our code should look as follows: <br>
+<pre><code>
+section .data
+    msg: db "Hello World
+section .bss
+section .text
+
+</code></pre>
+So now we have the data "Hello World!" and a pointer to the letter "H" in data, we are also going to need to add the "end of line" character to the data we have defined, so that the terminal will start a new line before dropping back to shell, keeping the output from looking messy, the end of line character is the character "10". <br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+section .bss
+section .text
+
+</code></pre>
+At present we only have a label referancing the letter "H", we are going to need to tell the kernel how many characters to print after the letter "H", we could do this simply by telling it "12" leter on in the program, however it is easier and more efficient to set up a compile time replacement using the "equ" command, this will go through replacing all usage of the label referancing "equ" with the data after "equ". So, we set up "equ 12", well, not quite, we want to minimise the user effort required later should we need to change the message to print at a latter date, so we need some code to figure out the length of hello world, we can do this using a usefull nasm syntax which is the "$" symbol. This symbol means "start of currently defined data", so, we can subtract the label to the data "H" from the "start of currently defined data" in order to find its length, so we use the syntax "equ $-msg", we will label this "len" for ease of use. We also don't need any varibales for this, so we can go ahead and remove the bss section<br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+    len: equ $-msg
+section .text
+</code></pre>
+We are now ready to write the bulk of the program, Asssembly language is all about interacting with your Kernel through a seriese of registers, for this tutorial, we need 4 of them, these are "eax", "ebx", "ecx" and "edx". When we call the kernel, it looks at the contents of "eax" to decide what to do, and uses the other registers relevent to what we have stored in eax. The system call we are interested in is one called "write", this is the call used to display user output to a device. Write is the fourth system call, so we need to move the number "4" into the "eax" register, we do this with the command "mov eax, 4". <br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+    len: equ $-msg
+section .text
+    global _start
+_start:
+    mov eax, 4
+    
+</code></pre>
+You may notice I added in some code before the "mov eax, 4", this code was general setup code you will always need in assembly, as it tells the program where to start running, as such it can be generally input and I don't feel the need to explain why here. <br><br>
+
+So, now we have sys_write setup, we need to put the location we are outputting to in the register "ebx", the location we want is the "standard output" which is the number 1, this will allow us to write the output to the terminal. <br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+    len: equ $-msg
+section .text
+    global _start
+_start:
+    mov eax, 4
+    mov ebx, 1
+    
+</code></pre>
+Next, we need to move the label referancing the start of the information we want to print into "ecx", and the length we want to print after that label into "edx". this is a straightforward procedure as we simply need to "mov ecx, msg" and "mov edx, len" <br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+    len: equ $-msg
+section .text
+    global _start
+_start:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, len
+    
+</code></pre>
+Thats it for the setup, all we need to do at that point is call the kernel with the command "int 80h", and the program will print "Hello World!" to the terminal... Then segfault. In order to fix the segfault we are going to have to use the first system call "sys_exit". sys_exit only uses the "ebx" register to store the error code, so we can finish of the code like this: <br>
+<pre><code>
+section .data
+    msg: db "Hello World!", 10
+    len: equ $-msg
+section .text
+    global _start
+_start:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, len
+    int 80h
+    mov eax, 1
+    mov ebx, 0
+    int 80h
+    
+</code></pre>
+Thats it, all we have to do now is compile and run the code, for the sake of this tutorial, I'm going to assume you named the file "helloworld.asm" and you want the final binary to be called "helloworld", anywhere you see these in the following compiley code, you can simply substitute for your actual circumstance (you can also swap out the helloworld.o for the relevent .o file) <br>
+
+<b> For 32 bit </b>
+<pre><code>
+nasm -f elf helloworld.asm
+nasm -s -o helloworld helloworld.o
+
+</pre></code>
+<b> For 64 bit </b>
+<pre><code>
+nasm -f elf helloworld.asm
+nasm -m elf_i386 -s -o helloworld helloworld.o
+
+</code></pre>
+Post compiling you can run the program with "./helloworld" or your equivilent <br><br>
+<br>
+<small> Written by Sam </small> 

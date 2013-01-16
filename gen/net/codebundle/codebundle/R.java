@@ -19,6 +19,7 @@ public final class R {
         public static final int scrollView1=0x7f060000;
         public static final int textView1=0x7f060002;
         public static final int textView2=0x7f060003;
+        public static final int wvTut=0x7f060004;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -27,6 +28,7 @@ public final class R {
         public static final int r_lubuntu=0x7f030003;
         public static final int r_slax=0x7f030004;
         public static final int r_slitaz=0x7f030005;
+        public static final int web_view=0x7f030006;
     }
     public static final class string {
         public static final int AdamBio=0x7f040006;

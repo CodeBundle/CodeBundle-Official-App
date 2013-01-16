@@ -19,6 +19,9 @@ public class CodeBundle extends TabActivity {
 
 		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Reviews")
 				.setContent(new Intent(this, Reviews.class)));
+		
+		tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Tutorials")
+				.setContent(new Intent(this, Tutorials.class)));
 
 	}
 }
